@@ -1,5 +1,5 @@
 import {Router} from 'express'
-import {createExpenses, deleteExpenses, getExpenses, getOneExpenses, updateExpenses} from '../controllers/index.controller'
+import {createExpenses, deleteExpenses, getExpenses, getOneExpenses, updateExpenses} from '../controller/index.controller'
 const router = Router()
 
 router.post('/expenses', createExpenses)
