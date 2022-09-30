@@ -1,5 +1,5 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/dist/query/react";
-import {IExpenses} from "../models/IExpenses";
+import { IExpenses } from "../models/IExpenses";
 
 export const expensesAPI = createApi({
     reducerPath: 'expensesAPI',
