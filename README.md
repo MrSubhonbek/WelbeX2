@@ -15,6 +15,6 @@ Node js, Express, PostgreSQL
 
 ## не успел сделать:
 
-  перенести запросы в Services.ts
+  перенести запросы в Services.ts и 
   упростить функции
   
