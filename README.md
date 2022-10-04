@@ -14,7 +14,6 @@ RTK Query, Redux Toolkit, Axios, Mdb-react-ui-kit (для стилей)
 Node js, Express, PostgreSQL
 
 ## не успел сделать:
-
-  перенести запросы в Services.ts и 
-  упростить функции
+ пагинацию во время сортировки и поиска 
+  
  
