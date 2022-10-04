@@ -10,61 +10,37 @@ import {
 export const expensesAPI = createApi({
   reducerPath: "expensesAPI",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5000" }),
+  tagTypes: ["Expenses"],
   endpoints: (build) => ({
-    fetchSortData: build.query<IArrayExpenses, ISortData>({
-      query: (sort) => ({
-        url: `/data?_sort=${sort.sortColum}&_order=asc&_start=${sort.limit.start}&_end=${sort.limit.end}`,
-      }),
-    }),
-    fetchSearchData: build.query<IArrayExpenses, ISearchData>({
-      query: (search) => ({
-        url: `/data?q=${search.searchValue}&_start=${search.limit.start}&_end=${search.limit.end}`,
-      }),
-    }),
-    fetchLimitData: build.query<IArrayExpenses, ILimit>({
+    fetchAllExpenses: build.query<IExpenses[], ILimit>({
       query: (limit) => ({
         url: `/data?_start=${limit.start}&_end=${limit.end}`,
       }),
+      providesTags: ["Expenses"],
     }),
-    fetchAllExpenses: build.query<IArrayExpenses, void>({
-      query: () => ({
-        url: `/`,
+    fetchSortData: build.mutation<IExpenses[], ISortData>({
+      query: (sort) => ({
+        url: `/data?_sort=${sort.sortColum}&_order=asc&_start=${sort.limit.start}&_end=${sort.limit.end}`,
       }),
+      invalidatesTags: ["Expenses"],
     }),
-    fetchOneExpenses: build.query<IArrayExpenses, IExpenses>({
-      query: (expenses) => ({
-        url: `/${expenses._id}`,
+    fetchSearchData: build.mutation<IExpenses[], ISearchData>({
+      query: (search) => ({
+        url: `/data?q=${search.searchValue}&_start=${search.limit.start}&_end=${search.limit.end}`,
       }),
+      invalidatesTags: ["Expenses"],
     }),
-    createExpenses: build.mutation<IArrayExpenses, IExpenses>({
-      query: (expenses) => ({
-        url: `/`,
-        method: "POST",
-        body: expenses,
+    fetchLimitData: build.mutation<IExpenses[], ILimit>({
+      query: (limit) => ({
+        url: `/data?_start=${limit.start}&_end=${limit.end}`,
       }),
-    }),
-    updateExpenses: build.mutation<IArrayExpenses, IExpenses>({
-      query: (expenses) => ({
-        url: `/${expenses._id}`,
-        method: "PUT",
-        body: expenses,
-      }),
-    }),
-    deleteExpenses: build.mutation<IArrayExpenses, IExpenses>({
-      query: (expenses) => ({
-        url: `/${expenses._id}`,
-        method: "DELETE",
-      }),
+      invalidatesTags: ["Expenses"],
     }),
   }),
 });
 export const {
-  useFetchLimitDataQuery,
-  useFetchSearchDataQuery,
-  useFetchSortDataQuery,
-  useUpdateExpensesMutation,
+  useFetchLimitDataMutation,
+  useFetchSearchDataMutation,
+  useFetchSortDataMutation,
   useFetchAllExpensesQuery,
-  useFetchOneExpensesQuery,
-  useDeleteExpensesMutation,
-  useCreateExpensesMutation,
 } = expensesAPI;

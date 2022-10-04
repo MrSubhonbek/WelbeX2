@@ -4,103 +4,76 @@ import {
   MDBPaginationItem,
   MDBPaginationLink,
 } from "mdb-react-ui-kit";
-import React from "react";
-import { IExpenses } from "../store/models/IExpenses";
+import { FC, useState } from "react";
+import { IExpenses, ILimit } from "../store/models/IExpenses";
+import { useFetchLimitDataMutation } from "../store/services/ExpensesService";
 
 interface IProps {
-  data: Array<IExpenses>;
-  pageLimit: number;
-  sortPagination: string;
-  currentPage: number;
-  operation: string;
-  loadsData: (
-    start: number,
-    end: number,
-    increase: number,
-    operation: string,
-    sortPagination: string
-  ) => void;
+  limit: ILimit;
+  setData: (data: IExpenses[] | undefined) => void;
+  setLimit: (limit: ILimit) => void;
 }
 
-export const Pagination = (props: IProps) => {
-  if (props.data.length < 4 && props.currentPage === 0) return null;
-  if (props.currentPage === 0) {
+export const Pagination: FC<IProps> = ({ limit, setData, setLimit }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [page, {}] = useFetchLimitDataMutation();
+  const increase = limit.end;
+  const handleNext = async () => {
+    const data = await page({
+      start: limit.start + increase,
+      end: limit.end + increase,
+    }).unwrap();
+    if (data.length >= 1) {
+      setData(data);
+      setLimit({
+        start: limit.start + increase,
+        end: limit.end + increase,
+      });
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  const handlePrev = async () => {
+    if (currentPage <= 1) {
+      return;
+    }
+    const data = await page({
+      start: limit.start - increase,
+      end: limit.end - increase,
+    }).unwrap();
+    setData(data);
+    setLimit({
+      start: limit.start - increase,
+      end: limit.end - increase,
+    });
+    setCurrentPage(currentPage - 1);
+  };
+
+  const renderPagination = () => {
     return (
       <MDBPagination className="mb-0">
         <MDBPaginationItem>
-          <MDBPaginationLink>1</MDBPaginationLink>
+          <MDBBtn onClick={handlePrev}>Prev</MDBBtn>
         </MDBPaginationItem>
         <MDBPaginationItem>
-          <MDBBtn
-            onClick={() =>
-              props.loadsData(4, 8, 1, props.operation, props.sortPagination)
-            }
-          >
-            Next
-          </MDBBtn>
+          <MDBPaginationLink>{currentPage}</MDBPaginationLink>
+        </MDBPaginationItem>
+        <MDBPaginationItem>
+          <MDBBtn onClick={handleNext}>Next</MDBBtn>
         </MDBPaginationItem>
       </MDBPagination>
     );
-  } else if (props.currentPage < 4 - 1 && props.data.length === 4) {
-    return (
-      <MDBPagination className="mb-0">
-        <MDBPaginationItem>
-          <MDBBtn
-            onClick={() =>
-              props.loadsData(
-                (props.currentPage - 1) * 4,
-                props.currentPage * 4,
-                -1,
-                props.operation,
-                props.sortPagination
-              )
-            }
-          >
-            Prev
-          </MDBBtn>
-        </MDBPaginationItem>
-        <MDBPaginationItem>
-          <MDBPaginationLink>{props.currentPage + 1}</MDBPaginationLink>
-        </MDBPaginationItem>
-        <MDBPaginationItem>
-          <MDBBtn
-            onClick={() =>
-              props.loadsData(
-                (props.currentPage + 1) * 4,
-                (props.currentPage + 2) * 4,
-                1,
-                props.operation,
-                props.sortPagination
-              )
-            }
-          >
-            Next
-          </MDBBtn>
-        </MDBPaginationItem>
-      </MDBPagination>
-    );
-  } else {
-    return (
-      <MDBPagination className="mb-0">
-        <MDBPaginationItem>
-          <MDBBtn
-            onClick={() =>
-              props.loadsData(
-                (props.currentPage - 1) * 4,
-                props.currentPage * 4,
-                -1,
-                props.operation,
-                props.sortPagination
-              )
-            }
-          >
-            Prev
-          </MDBBtn>
-        </MDBPaginationItem>
-        <MDBPaginationItem>
-          <MDBPaginationLink>{props.currentPage + 1}</MDBPaginationLink>
-        </MDBPaginationItem>
-      </MDBPagination>
-    );
-  }
+  };
+
+  return (
+    <div
+      style={{
+        margin: "auto",
+        padding: "15px",
+        maxWidth: "250px",
+        alignContent: "center",
+      }}
+    >
+      {renderPagination()}
+    </div>
+  );
 };

@@ -1,23 +1,23 @@
 import { MDBTableBody } from "mdb-react-ui-kit";
 import { IExpenses } from "../store/models/IExpenses";
 interface IProps {
-  data: Array<IExpenses>;
+  data: Array<IExpenses> | undefined;
 }
 export function BodyTable(props: IProps) {
-  const showDataHandler = props.data.map((e, index) => (
-    <MDBTableBody key={e._id}>
+  const showDataHandler = props.data?.map((expenses) => (
+    <MDBTableBody key={expenses._id}>
       <tr>
-        <th scope="row">{e._id}</th>
-        <td>{e.name}</td>
-        <td>{e.date}</td>
-        <td>{e.count}</td>
-        <td>{e.distance}</td>
+        <th scope="row">{expenses._id}</th>
+        <td>{expenses.name}</td>
+        <td>{expenses.date}</td>
+        <td>{expenses.count}</td>
+        <td>{expenses.distance}</td>
       </tr>
     </MDBTableBody>
   ));
   return (
     <>
-      {props.data.length === 0 ? (
+      {props.data?.length === 0 ? (
         <MDBTableBody className="align-center mb-0">
           <tr>
             <td colSpan={8} className="text-center mb-0">
